@@ -1,0 +1,47 @@
+name: Build and Release
+
+on:
+  push:
+    tags:
+      - 'v*'
+
+permissions:
+  contents: write
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Install MinGW cross-compiler
+        run: sudo apt-get update && sudo apt-get install -y mingw-w64
+
+      - name: Build Linux binary
+        run: make linux
+
+      - name: Build Windows binary
+        run: make windows
+
+      - name: Create Release
+        uses: softprops/action-gh-release@v2
+        with:
+          body: |
+            🎮 Chris Level Up Day 🎂
+
+            **Linux:**
+            1. Download `level_up_day_linux`
+            2. Run:
+               ```
+               chmod +x level_up_day_linux
+               ./level_up_day_linux
+               ```
+
+            **Windows:**
+            1. Download `level_up_day_windows.exe`
+            2. Double-click to play.
+               *(If Windows warns you, click "More info → Run anyway" — it's just a tiny birthday game.)*
+          files: |
+            level_up_day_linux
+            level_up_day_windows.exe
